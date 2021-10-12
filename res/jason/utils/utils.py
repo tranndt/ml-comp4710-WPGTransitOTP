@@ -6,7 +6,7 @@ import seaborn as sns
 def import_data(data,root=".",import_folder="clean_datasets"):
     def _import_on_time(dataset):
         DF = pd.read_csv(dataset,low_memory=False).drop(columns=["Unnamed: 0"])
-        DF["Route"] = [tuple(l) for l in DF["Route"].str.replace("\(|\)|\'","",regex=True).str.split(", ")]
+        DF["Route"] = [to_tuple(s,dtype=str,) for s in DF["Route"].str.replace("\'","").values]
         DF["Scheduled Time"] = pd.to_datetime(DF["Scheduled Time"])
         return DF
 
@@ -21,12 +21,13 @@ def import_data(data,root=".",import_folder="clean_datasets"):
         DF["Direction"] = DF["Direction"].str.replace("\[|\]|\'","",regex=True).str.split(", ")
         DF["Date Closed - From"] = pd.to_datetime(DF["Date Closed - From"]) 
         DF["Date Closed - To"] = pd.to_datetime(DF["Date Closed - To"]) 
-        DF["Geometry"] = [[[(float(l.replace("(","").split(", ")[0]),float(l.replace(")","").split(", ")[1])) for l in s.split("), (")] for s in m] 
-                            for m in [j.replace("[[","").replace("]]","").split("], [") for j in DF["Geometry"].values]]
+        DF["Geometry"] = [[to_tuple_l(s) for s in m] for m in DF["Geometry"].str.split("\], \[").values]
         return DF
 
     def _import_road_network(dataset):
-        pass
+        DF = pd.read_csv(dataset).drop(columns="Unnamed: 0")
+        DF.loc[:,"Location"] = np.array([to_tuple_l(s) for s in DF["Location"]],dtype=object)
+        return DF
 
     def _import_sites(dataset):
         return pd.read_csv(dataset)
@@ -50,15 +51,11 @@ def import_data(data,root=".",import_folder="clean_datasets"):
     return import_func(dataset)
 
 
-def to_2tuple(s,dtype=float):
-    t1,t2 = s.replace("(","").replace(")","").split(", ")
-    return (dtype(t1),dtype(t2))
+def to_tuple(s,rev=False,dtype=float,strip="[(|)]",split=", ",):
+    t = s.strip(strip).split(split)
+    if rev: t = t[::-1]
+    return tuple(map(dtype,t))
 
-def to_2tuple_r(s,dtype=float):
-    t1,t2 = s.replace("(","").replace(")","").split(", ")
-    return (dtype(t2),dtype(t1))
-
-def to_2tuple_list(s,rev=False,dtype=float):
-    s = s.replace("[","").replace("]","").replace("), (",");(").split(";")
-    if rev: return [to_2tuple_r(t,dtype) for t in s] 
-    else: return [to_2tuple(t,dtype) for t in s]
+def to_tuple_l(s,rev=False,dtype=float,strip_l="[(|)]",split_l="), (",**kwargs):
+    t = s.strip(strip_l).split(split_l)
+    return [to_tuple(i,rev,dtype,**kwargs) for i in t]
