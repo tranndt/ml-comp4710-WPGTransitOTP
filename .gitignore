@@ -128,3 +128,5 @@ dmypy.json
 # Pyre type checker
 .pyre/
 .DS_Store
+res/jason/jason.zip
+res/jason/03_map.ipynb
