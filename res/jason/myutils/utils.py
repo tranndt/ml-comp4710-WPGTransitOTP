@@ -20,7 +20,9 @@ def import_data(data,root=".",import_folder="clean_datasets"):
         DF["Boundaries"] = DF["Boundaries"].str.replace("\[|\]|\'","",regex=True).str.split(", ")
         DF["Direction"] = DF["Direction"].str.replace("\[|\]|\'","",regex=True).str.split(", ")
         DF["Date Closed - From"] = pd.to_datetime(DF["Date Closed - From"]) 
-        DF["Date Closed - To"] = pd.to_datetime(DF["Date Closed - To"]) 
+        DF["Date Closed - To"] = pd.to_datetime(DF["Date Closed - To"])
+        DF["Time Closed - From"] = [pd.to_datetime(i).time() for i in DF["Time Closed - From"].values]
+        DF["Time Closed - To"] = [pd.to_datetime(i).time() for i in DF["Time Closed - To"].values] 
         DF["Geometry"] = [[to_tuple_l(s) for s in m] for m in DF["Geometry"].str.split("\], \[").values]
         return DF
 
