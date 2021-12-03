@@ -2,6 +2,10 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+import requests
+import json
+
+API_KEY = "AIzaSyDPuM2hJqPTf3aAuwlhkE_LlblTa_bNP4w"
 
 def import_data(data,root=".",import_folder="clean_datasets"):
     def _import_on_time(dataset):
@@ -115,3 +119,23 @@ def distance_within(org,pts,d=1000,key="index"):
 
 def fmt_timestamp(timestamp):
     return timestamp.hour+timestamp.minute/60
+
+def getDrivingDistance(coord1: tuple[float, float], coord2: tuple[float, float], api_key: str=API_KEY if API_KEY in globals() else "") -> int:
+    """
+    Calculate driving distance between two coordinates using Google Map API.
+
+    Parameters:
+        - coord1: takes a geo coordinate in tuple
+        - coord2: takes a geo coordinate in tuple
+        - api_key: Google API key. It can be predefined as API_KEY global variable, or be overriden by provided key.
+
+    Returns: 
+        An int indicating the driving distance between two given coordinates.
+
+    Depends on:
+        requests, json
+    """
+    result_json = requests.request(method="GET", headers={}, data={}, 
+    url=f"https://maps.googleapis.com/maps/api/directions/json?origin={coord1[0]},{coord1[1]}&destination={coord2[0]},{coord2[1]}&key={API_KEY}").text
+    result_json = json.loads(result_json)
+    return result_json["routes"][0]["legs"][0]["distance"]["value"]
