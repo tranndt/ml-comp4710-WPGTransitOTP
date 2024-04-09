@@ -1,5 +1,9 @@
 # A Regression Analysis of Winnipeg Transit On-time Performance  in Relation to Traffic Volume
 
+## Key Links
+- [Report](Report.pdf)
+- [Slides](Slides.pdf)
+
 ## About the project
 Goal
 - The goal of this project is to analyze and model On-Time-Performance of transits in Winnipeg using information about the traffic volume and other factors.
@@ -17,10 +21,12 @@ Source Datasets:
   - 5155 Bus Stops in total across Winnipeg (blue, orange and red) 
   - 1559 Bus Stops are within 2 km to one of the 8 traffic count stations (orange and red)
   - 226 Bus Stops are on the same street as the traffic count stations (red)
+
+  ![Bus Stops and Permanent Count Stations](assets/img01.jpg)
+
 5. Street Mappings
 6. Construction sites and road closure
 
-![](assets/img01.jpg)
 ![](assets/img02.jpg)
 
 Preprocessed Dataset:
@@ -51,7 +57,9 @@ Regression works
 Key features for performance:
 - Time factors (Time value, Time of Day, Day of Week and Day of Year) as well as Stop Number were shown to be key contributors to the regression models, as evidenced by the lower score in their absence.
 - The regression score is also significantly improved when trained and tested on only bus stops that are on the same street versus bus stops that are on different street to the count station, across all non-linear models.
-![](assets/img04.jpg)
+
+![](assets/img04.jpg) 
+
 ![](assets/img05.jpg)
 
 ## Obstacles & Future Work
