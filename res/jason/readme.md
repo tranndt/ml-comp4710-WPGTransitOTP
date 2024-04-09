@@ -1,3 +1,0 @@
-Modules:
-- folium
-- wkhtmltopdf
